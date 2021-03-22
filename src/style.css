@@ -1,0 +1,8 @@
+.pokemonList {
+    list-style-type: none;
+}
+
+.pokemonList li, .linkSpan {
+    font-weight: bold;
+    cursor: pointer;
+}
