@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import PokemonList from './pokemonList';
 import Pokemon from './pokemon';
 
-
-const defaultUrl = "https://pokeapi.co/api/v2/pokemon?limit=100";
-
 export const Pokemons = () => {
 
+    const defaultUrl = "https://pokeapi.co/api/v2/pokemon?limit=100";
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [url, setUrl] = useState(defaultUrl);
@@ -18,6 +16,7 @@ export const Pokemons = () => {
         height: "",
         weight: ""
     });
+    const [pokemonImage, setPokemonImage] = useState([]);
 
     useEffect(() => {
         fetch(url)
@@ -25,12 +24,10 @@ export const Pokemons = () => {
             .then(
                 (result) => {
                     if (result.results != null) {
-                        console.log(result);
                         setIsLoaded(true);
-                        setPokemons(result.results);    
+                        setPokemons(result.results); 
                     }
                     else {
-                        console.log(result);
                         setPokemons(null);
                         setIsLoaded(true);
                         setPokemon({
@@ -40,6 +37,9 @@ export const Pokemons = () => {
                             weight: result.weight,
                             height: result.height
                         });
+                        if (!pokemonImage.includes(result.id)) {
+                            setPokemonImage(prevState => ([...prevState, result.id]));
+                        }
                     }
                 },
                 (error) => {
@@ -47,8 +47,9 @@ export const Pokemons = () => {
                     setError(error);
                 }
             )
-    }, [url])
+    }, [url, pokemonImage])
 
+    
     if (error) {
         return <div>Error: {error.message}</div>;
     } 
@@ -56,7 +57,7 @@ export const Pokemons = () => {
         return <div>Loading...</div>;
     } 
     else if (pokemons != null) {
-        return <PokemonList pokemons={pokemons} setUrl={setUrl} />
+        return <PokemonList pokemons={pokemons} setUrl={setUrl} image={pokemonImage} />
     }
     else {
         return <Pokemon pokemon={pokemon} setUrl={() => setUrl(defaultUrl)} />
