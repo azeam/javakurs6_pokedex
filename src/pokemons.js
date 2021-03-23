@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import PokemonList from './pokemonList';
+import Pokemon from './pokemon';
+
 
 const defaultUrl = "https://pokeapi.co/api/v2/pokemon?limit=100";
 
@@ -8,23 +11,35 @@ export const Pokemons = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [url, setUrl] = useState(defaultUrl);
     const [pokemons, setPokemons] = useState([]);
-    const [pokemonDetails, setPokemonDetails] = useState([]);
-    const [pokemonImages, setPokemonImages] = useState([]);
+    const [pokemon, setPokemon] = useState({
+        name: "",
+        species: "",
+        image: "",
+        height: "",
+        weight: ""
+    });
 
     useEffect(() => {
         fetch(url)
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result);
-                    setIsLoaded(true);
                     if (result.results != null) {
-                        setPokemons(result.results);
+                        console.log(result);
+                        setIsLoaded(true);
+                        setPokemons(result.results);    
                     }
                     else {
+                        console.log(result);
                         setPokemons(null);
-                        setPokemonDetails(result);
-                        setPokemonImages(result.sprites);
+                        setIsLoaded(true);
+                        setPokemon({
+                            name: result.name, 
+                            species: result.species.name, 
+                            image: result.sprites.front_default,
+                            weight: result.weight,
+                            height: result.height
+                        });
                     }
                 },
                 (error) => {
@@ -41,26 +56,10 @@ export const Pokemons = () => {
         return <div>Loading...</div>;
     } 
     else if (pokemons != null) {
-        return (
-        <ul className="pokemonList" >
-            {
-                pokemons.map(pokemon => (
-                    <li key={pokemon.name} onClick = {() => setUrl(pokemon.url)}>
-                        {pokemon.name}
-                    </li>
-                ))  
-            }
-        </ul>
-        );
+        return <PokemonList pokemons={pokemons} setUrl={setUrl} />
     }
     else {
-        return (
-            <div>  
-                <span className="linkSpan" onClick={() => setUrl(defaultUrl)}>All Pokémons</span>              
-                <h2>{pokemonDetails.name}</h2>
-                <img src={pokemonImages.front_default} alt={pokemonDetails.name} />
-            </div>
-        );
+        return <Pokemon pokemon={pokemon} setUrl={() => setUrl(defaultUrl)} />
     }
 }
 

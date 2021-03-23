@@ -7,7 +7,7 @@ import './style.css';
 ReactDOM.render(
   <React.StrictMode>
     <Title />
-    <Pokemons url="test" />
+    <Pokemons />
   </React.StrictMode>,
   document.getElementById('root')
 );
