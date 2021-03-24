@@ -9,7 +9,6 @@ export const Pokemon = (props) => {
             Height: {props.pokemon.height}
             <br /> 
             Weight: {props.pokemon.weight}
-            <button>Remove</button>
         </div>
     );
 }

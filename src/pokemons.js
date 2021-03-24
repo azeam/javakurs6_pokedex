@@ -9,7 +9,7 @@ export const Pokemons = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [url, setUrl] = useState(defaultUrl);
     const [pokemons, setPokemons] = useState([]);
-    const [pokemon, setPokemon] = useState({
+    const [pokemonDetails, setPokemonDetails] = useState({
         name: "",
         species: "",
         image: "",
@@ -25,20 +25,20 @@ export const Pokemons = () => {
                 (result) => {
                     if (result.results != null) {
                         setIsLoaded(true);
+                        setPokemonDetails(null); 
                         setPokemons(result.results); 
                     }
                     else {
-                        setPokemons(null);
                         setIsLoaded(true);
-                        setPokemon({
+                        setPokemonDetails({
                             name: result.name, 
                             species: result.species.name, 
                             image: result.sprites.front_default,
                             weight: result.weight,
                             height: result.height
                         });
-                        if (!pokemonImage.includes(result.id)) {
-                            setPokemonImage(prevState => ([...prevState, result.id]));
+                        if (!pokemonImage.includes(result.name)) {
+                            setPokemonImage(prevState => ([...prevState, result.name]));
                         }
                     }
                 },
@@ -49,6 +49,10 @@ export const Pokemons = () => {
             )
     }, [url, pokemonImage])
 
+    function removePokemon(name) {
+        const newList = pokemons.filter((item) => item.name !== name);
+        setPokemons(newList);
+    } 
     
     if (error) {
         return <div>Error: {error.message}</div>;
@@ -56,11 +60,19 @@ export const Pokemons = () => {
     else if (!isLoaded) {
         return <div>Loading...</div>;
     } 
-    else if (pokemons != null) {
-        return <PokemonList pokemons={pokemons} setUrl={setUrl} image={pokemonImage} />
+    else if (pokemonDetails !== null) {
+        return <Pokemon 
+                    setUrl={() => setUrl(defaultUrl)}
+                    pokemon={pokemonDetails} 
+                />
     }
     else {
-        return <Pokemon pokemon={pokemon} setUrl={() => setUrl(defaultUrl)} />
+        return <PokemonList 
+                    handleRemove={removePokemon} 
+                    pokemons={pokemons} 
+                    setUrl={setUrl} 
+                    image={pokemonImage} 
+                />        
     }
 }
 
