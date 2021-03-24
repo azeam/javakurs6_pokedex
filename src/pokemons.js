@@ -17,6 +17,7 @@ export const Pokemons = () => {
         weight: ""
     });
     const [pokemonImage, setPokemonImage] = useState([]);
+    const [pokemonsToRemove, setPokemonsToRemove] = useState([]);
 
     useEffect(() => {
         fetch(url)
@@ -26,7 +27,8 @@ export const Pokemons = () => {
                     if (result.results != null) {
                         setIsLoaded(true);
                         setPokemonDetails(null); 
-                        setPokemons(result.results); 
+                        const newList = result.results.filter((item) => !pokemonsToRemove.includes(item.name));
+                        setPokemons(newList);
                     }
                     else {
                         setIsLoaded(true);
@@ -47,11 +49,12 @@ export const Pokemons = () => {
                     setError(error);
                 }
             )
-    }, [url, pokemonImage])
+    }, [url, pokemonImage, pokemonsToRemove])
 
     function removePokemon(name) {
-        const newList = pokemons.filter((item) => item.name !== name);
-        setPokemons(newList);
+        if (!pokemonsToRemove.includes(name)) {
+            setPokemonsToRemove(prevState => ([...prevState, name]));
+        }
     } 
     
     if (error) {
