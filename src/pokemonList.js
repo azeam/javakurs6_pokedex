@@ -1,3 +1,5 @@
+import { cap } from './helper';
+
 export const PokemonList = (props) => {
 
     const baseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
@@ -7,20 +9,14 @@ export const PokemonList = (props) => {
             {
                 props.pokemons.map((pokemon) => (
                     <div key={pokemon.name} className="card" onClick = {() => props.setUrl(pokemon.url)}>
+                        
+                        <div className="container">
+                            <h4><b>{cap(pokemon.name)}</b></h4>    
+                        </div>
                         <img 
                             src={props.image.includes(pokemon.name) ? baseUrl + (pokemon.url.split('/')[6]) + ".png" : "#"} 
-                            alt={props.image.includes(pokemon.name) ? pokemon.name : ""} 
+                            alt={props.image.includes(pokemon.name) ? cap(pokemon.name) : ""} 
                         />
-                        <div className="container">
-                            <h4><b>{pokemon.name}</b></h4>
-                            <button onClick={(e) => {
-                                e.stopPropagation(); 
-                                props.handleRemove(pokemon.name)
-                            }}>
-                                Remove
-                            </button>
-                            
-                        </div>
                     </div>
                 ))  
             }

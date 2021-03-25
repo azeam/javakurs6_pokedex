@@ -14,7 +14,9 @@ export const Pokemons = () => {
         species: "",
         image: "",
         height: "",
-        weight: ""
+        weight: "",
+        abilities: [],
+        forms: []
     });
     const [pokemonImage, setPokemonImage] = useState([]);
     const [pokemonsToRemove, setPokemonsToRemove] = useState([]);
@@ -27,18 +29,23 @@ export const Pokemons = () => {
                     if (result.results != null) {
                         setIsLoaded(true);
                         setPokemonDetails(null); 
-                        const newList = result.results.filter((item) => !pokemonsToRemove.includes(item.name));
-                        setPokemons(newList);
+                        // compare list with pokemons to remove and show only non matches
+                        const pokemonList = result.results.filter((item) => !pokemonsToRemove.includes(item.name));
+                        setPokemons(pokemonList);
                     }
                     else {
                         setIsLoaded(true);
+                        console.log(result);
                         setPokemonDetails({
                             name: result.name, 
                             species: result.species.name, 
                             image: result.sprites.front_default,
                             weight: result.weight,
-                            height: result.height
+                            height: result.height,
+                            abilities: result.abilities,
+                            forms: result.forms
                         });
+                        // make list of images to show (names of visited pokemons)
                         if (!pokemonImage.includes(result.name)) {
                             setPokemonImage(prevState => ([...prevState, result.name]));
                         }
@@ -51,6 +58,7 @@ export const Pokemons = () => {
             )
     }, [url, pokemonImage, pokemonsToRemove])
 
+    // add to array of pokemons to remove
     function removePokemon(name) {
         if (!pokemonsToRemove.includes(name)) {
             setPokemonsToRemove(prevState => ([...prevState, name]));
@@ -63,15 +71,17 @@ export const Pokemons = () => {
     else if (!isLoaded) {
         return <div>Loading...</div>;
     } 
+    // show single pokemon
     else if (pokemonDetails !== null) {
         return <Pokemon 
                     setUrl={() => setUrl(defaultUrl)}
                     pokemon={pokemonDetails} 
+                    handleRemove={removePokemon} 
                 />
     }
+    // show all pokemons
     else {
         return <PokemonList 
-                    handleRemove={removePokemon} 
                     pokemons={pokemons} 
                     setUrl={setUrl} 
                     image={pokemonImage} 

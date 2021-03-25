@@ -1,7 +1,7 @@
 import React from 'react';
 
-function Title() {
-    return <h1>Pokémons</h1>;
+const Title = () => {
+    return <h1>Pokédex</h1>;
 }
 
 export default Title;
