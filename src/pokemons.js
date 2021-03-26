@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import PokemonList from './pokemonList';
-import Pokemon from './pokemon';
+import PokemonCard from './pokemonCard';
+import PokemonDetails from './pokemonDetails';
 
-export const Pokemons = () => {
+const Pokemons = () => {
 
     const defaultUrl = "https://pokeapi.co/api/v2/pokemon?limit=100";
     const [error, setError] = useState(null);
@@ -35,7 +35,6 @@ export const Pokemons = () => {
                     }
                     else {
                         setIsLoaded(true);
-                        console.log(result);
                         setPokemonDetails({
                             name: result.name, 
                             species: result.species.name, 
@@ -59,7 +58,7 @@ export const Pokemons = () => {
     }, [url, pokemonImage, pokemonsToRemove])
 
     // add to array of pokemons to remove
-    function removePokemon(name) {
+    const removePokemon = (name) => {
         if (!pokemonsToRemove.includes(name)) {
             setPokemonsToRemove(prevState => ([...prevState, name]));
         }
@@ -72,8 +71,8 @@ export const Pokemons = () => {
         return <div>Loading...</div>;
     } 
     // show single pokemon
-    else if (pokemonDetails !== null) {
-        return <Pokemon 
+    else if (pokemonDetails) {
+        return <PokemonDetails 
                     setUrl={() => setUrl(defaultUrl)}
                     pokemon={pokemonDetails} 
                     handleRemove={removePokemon} 
@@ -81,11 +80,20 @@ export const Pokemons = () => {
     }
     // show all pokemons
     else {
-        return <PokemonList 
-                    pokemons={pokemons} 
-                    setUrl={setUrl} 
-                    image={pokemonImage} 
-                />        
+        return (
+            <>
+                {
+                    pokemons.map((pokemon, index) => (
+                        <PokemonCard 
+                            key={index}
+                            pokemon={pokemon} 
+                            setUrl={setUrl} 
+                            image={pokemonImage} 
+                        />
+                    ))  
+                }
+            </>  
+        );  
     }
 }
 

@@ -1,7 +1,8 @@
 import { cap } from './helper';
 
-export const Pokemon = (props) => {
+const PokemonDetails = (props) => {
 
+    // add to array of pokemons to remove and update url to default (list all)
     function remove(name) {
         props.handleRemove(name); 
         props.setUrl();
@@ -39,4 +40,4 @@ export const Pokemon = (props) => {
     );
 }
 
-export default Pokemon;
+export default PokemonDetails;
